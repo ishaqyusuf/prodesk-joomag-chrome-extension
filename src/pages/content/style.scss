@@ -1,0 +1,18 @@
+@import "@assets/style/theme.scss";
+
+// CSS that can pollute global styles. Use it with caution.
+// If you use ShodowRoot for style pollution, this style will not be applied inside the content script.
+.content-view-style-may-be-not-working {
+  font-size: 30px;
+}
+.text-select {
+  cursor: pointer;
+  &:hover {
+    color: blue;
+  }
+}
+* {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
