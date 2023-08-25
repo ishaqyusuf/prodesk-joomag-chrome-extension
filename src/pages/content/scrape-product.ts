@@ -146,7 +146,11 @@ function getSubtitle(data: IData) {
       console.log("getSubtitle");
       if (subtitle) break;
       const nT = safeText(node);
-      if (nT.toLowerCase().includes("discontinued") || !nT) {
+      if (
+        nT.toLowerCase().includes("discontinued") ||
+        ["(", ")"].every((v) => nT.includes(v)) ||
+        !nT
+      ) {
         node = _nodeElement(node.nextSibling);
         continue;
       }

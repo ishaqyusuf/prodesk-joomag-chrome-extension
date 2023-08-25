@@ -23,11 +23,14 @@ interface JoomagProductPostReq {
   swing;
   price;
   total;
+  tax;
+  taxPercentage;
 }
 export default function ProductSelectForm({ ctx, setCtx }: IProps) {
   // useEffect(() => {
   handleItemClick((v) => scrape(v));
   // }, []);
+  const [scraping, setScraping] = useState(false);
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
@@ -36,7 +39,7 @@ export default function ProductSelectForm({ ctx, setCtx }: IProps) {
   const [qty, setQty] = useState("");
   async function scrape(e) {
     console.log("->", ctx);
-    setLoading(true);
+    setScraping(true);
     setProduct({} as any);
     if (e.ctrlKey || e.metaKey) {
       const product = scrapeProduct(e.target);
@@ -49,12 +52,12 @@ export default function ProductSelectForm({ ctx, setCtx }: IProps) {
 
       const prd = resp?.id ? resp : product;
       console.log("=====>", ctx);
-      setLoading(false);
       setProduct(prd);
       setPrice(prd.price);
       setTitle(prd?.meta?.componentTitle || prd.description);
+      setScraping(false);
     } else {
-      setLoading(false);
+      setScraping(false);
       window.alert("Unable to locate product");
     }
   }
@@ -76,7 +79,10 @@ export default function ProductSelectForm({ ctx, setCtx }: IProps) {
       total: +price * +qty,
       price: +price,
       swing,
+      taxPercentage: +ctx.taxPercentage,
+      tax: null,
     };
+    form.tax = form.total * (form.taxPercentage / 100);
     const body = JSON.stringify(form);
     console.log(form);
     fetch(url(`product`), {
@@ -93,6 +99,7 @@ export default function ProductSelectForm({ ctx, setCtx }: IProps) {
             product: null,
             nextUid: ctx.nextUid + 1,
           });
+          setProduct(null as any);
           setPrice("");
           setQty("");
           setSwing("");
@@ -104,33 +111,6 @@ export default function ProductSelectForm({ ctx, setCtx }: IProps) {
       });
     setLoading(false);
   }
-
-  if (!product && ctx.orderId)
-    return (
-      <div className="bg-white w-72">
-        {loading ? (
-          <div className="flex flex-col y-8 items-center justify-center">
-            <Loader />
-          </div>
-        ) : (
-          <div className="border rounded-lg p-2 flex flex-col">
-            <div className="bg-white line-clamp-2 w-">
-              Hold Ctrl key and click on the product text.
-            </div>
-            <div className="flex justify-end">
-              <Btn
-                color="warn"
-                onClick={() => {
-                  setCtx({} as any);
-                }}
-              >
-                Reset
-              </Btn>
-            </div>
-          </div>
-        )}
-      </div>
-    );
   if (product)
     return (
       <div className="grid gap-4 bg-white shadow-xl border overflow-hidden p-2 rounded-lg w-72 grid-cols-2">
@@ -144,7 +124,7 @@ export default function ProductSelectForm({ ctx, setCtx }: IProps) {
           <Label>Door Title</Label>
           <Input value={title} setValue={setPrice} />
         </div>
-        <div className="grid gap-4 grid-cols-2">
+        <div className="grid gap-2 grid-cols-2">
           <div className="grid gap-2">
             <Label>Price</Label>
             <Input type="number" value={price} setValue={setPrice} />
@@ -173,4 +153,30 @@ export default function ProductSelectForm({ ctx, setCtx }: IProps) {
         </div>
       </div>
     );
+
+  return (
+    <div className="bg-white w-72 border rounded-lg p-2">
+      {scraping ? (
+        <div className="flex flex-col y-8 items-center justify-center">
+          <Loader />
+        </div>
+      ) : (
+        <div className=" flex flex-col">
+          <div className="bg-white line-clamp-2 text-sm">
+            Hold Ctrl key and click on the product text.
+          </div>
+          <div className="flex justify-end">
+            <Btn
+              color="warn"
+              onClick={() => {
+                setCtx({} as any);
+              }}
+            >
+              Reset
+            </Btn>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

@@ -7,6 +7,7 @@ interface ICtx {
   orderId;
   nextUid;
   componentUUid;
+  taxPercentage;
   product: IJoomagProduct;
 }
 export interface IJoomagProduct {
