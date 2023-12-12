@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 
 import ProductSelectForm from "./components/product-select-form";
 import OrderForm from "./components/order-form";
+import { handleOcr } from "../ocr";
 
 interface ICtx {
   orderId;
@@ -27,7 +28,7 @@ export interface IProps {
 }
 export default function App() {
   const [ctx, setCtx] = useState<ICtx>({} as any);
-
+  handleOcr();
   return (
     <div className="z-50">
       <div className="z-50 fixed bottom-0 right-0 m-4 mb-10">

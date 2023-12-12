@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IJoomagProduct, IProps } from "../App";
 import { handleItemClick } from "../../utils";
 import { scrapeProduct } from "../../scrape-product";
@@ -7,6 +7,7 @@ import { url } from "../../api";
 import Input from "./input";
 import Btn from "./button";
 import Loader from "./loader";
+import { handleOcr } from "../../ocr";
 
 interface IForm {
   title;
@@ -29,6 +30,7 @@ interface JoomagProductPostReq {
 export default function ProductSelectForm({ ctx, setCtx }: IProps) {
   // useEffect(() => {
   handleItemClick((v) => scrape(v));
+
   // }, []);
   const [scraping, setScraping] = useState(false);
   const [loading, setLoading] = useState(false);
